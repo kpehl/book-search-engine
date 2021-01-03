@@ -1,11 +1,31 @@
+// Dependencies
+// Express Server
 const express = require('express');
+// Node path
 const path = require('path');
+// Database connection
 const db = require('./config/connection');
-const routes = require('./routes');
+// Require routes (RESTful API)
+// const routes = require('./routes');
+// Import the Apollo Server
+const { ApolloServer } = require('apollo-server-express');
+// Import the typeDefs and resolvers
+const { typeDefs, resolvers } = require('./schemas');
 
+// Set up the Express server
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Set up the Apollo Server and pass in the schema
+const server = new ApolloServer({
+  typeDefs,
+  resolvers
+});
+
+// integrate the Apollo server with the Express application as middleware
+server.applyMiddleware({ app });
+
+// Express middleware for parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -13,9 +33,21 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
-app.use(routes);
+// RESTful API uses routes
+// app.use(routes);
+// RESTful Server start
+// db.once('open', () => {
+//   app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
+// });
 
+// GraphQL and Express Server start
 db.once('open', () => {
-  app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
+  app.listen(PORT, () => {
+    console.log(`API server running on port ${PORT}!`);
+    console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+  });
 });
