@@ -11,6 +11,7 @@ const db = require('./config/connection');
 const { ApolloServer } = require('apollo-server-express');
 // Import the typeDefs and resolvers
 const { typeDefs, resolvers } = require('./schemas');
+const { authMiddleware } = require('./utils/auth');
 
 // Set up the Express server
 const app = express();
@@ -19,7 +20,8 @@ const PORT = process.env.PORT || 3001;
 // Set up the Apollo Server and pass in the schema
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: authMiddleware
 });
 
 // integrate the Apollo server with the Express application as middleware
@@ -33,9 +35,6 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
 
 // RESTful API uses routes
 // app.use(routes);
