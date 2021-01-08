@@ -3,13 +3,13 @@
 const express = require('express');
 // Node path
 const path = require('path');
-// Database connection
-const db = require('./config/connection');
 // Import the Apollo Server
 const { ApolloServer } = require('apollo-server-express');
 // Import the typeDefs and resolvers
 const { typeDefs, resolvers } = require('./schemas');
 const { authMiddleware } = require('./utils/auth');
+// Database connection
+const db = require('./config/connection');
 
 // Set up the Express server
 const app = express();
@@ -26,7 +26,7 @@ const server = new ApolloServer({
 server.applyMiddleware({ app });
 
 // Express middleware for parsing
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // if we're in production, serve client/build as static assets
