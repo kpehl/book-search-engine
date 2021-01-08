@@ -74,15 +74,10 @@ const SearchBooks = () => {
       await saveBook({
         variables: {book: bookToSave},
         update: cache => {
-          const data = cache.readQuery({ query: GET_ME });
-          console.log(data)
-          const userDataCache = data.me;
-          console.log(userDataCache)
-          const savedBooksCache = userDataCache.savedBooks;
-          console.log(savedBooksCache)
-          const updatedBookCache = [...savedBooksCache, bookToSave];
-          data.me.savedBooks = updatedBookCache;
-          cache.writeQuery({ query: GET_ME , data: {data: {...data.me.savedBooks}}})
+          const {me} = cache.readQuery({ query: GET_ME });
+          // console.log(me)
+          // console.log(me.savedBooks)
+          cache.writeQuery({ query: GET_ME , data: {me: { ...me, savedBooks: [...me.savedBooks, bookToSave] } } })
         }
       });
 
