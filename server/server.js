@@ -5,8 +5,6 @@ const express = require('express');
 const path = require('path');
 // Database connection
 const db = require('./config/connection');
-// Require routes (RESTful API)
-// const routes = require('./routes');
 // Import the Apollo Server
 const { ApolloServer } = require('apollo-server-express');
 // Import the typeDefs and resolvers
@@ -35,13 +33,6 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
-
-// RESTful API uses routes
-// app.use(routes);
-// RESTful Server start
-// db.once('open', () => {
-//   app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
-// });
 
 // GraphQL and Express Server start
 db.once('open', () => {

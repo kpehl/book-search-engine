@@ -1,13 +1,6 @@
 // import gql tagged template function
 const { gql } = require('apollo-server-express');
 
-// Routes to re-create
-// createUser,
-// getSingleUser,
-// saveBook,
-// deleteBook,
-// login
-
 // create typeDefs
 const typeDefs = gql`
     type Book {

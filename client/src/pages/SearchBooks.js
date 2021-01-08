@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
-import { saveBook, searchGoogleBooks } from '../utils/API';
+import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import { useMutation } from '@apollo/react-hooks';
 import {SAVE_BOOK} from '../utils/mutations';
@@ -62,7 +62,6 @@ const SearchBooks = () => {
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-    console.log(bookToSave)
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -76,8 +75,11 @@ const SearchBooks = () => {
         variables: {book: bookToSave},
         update: cache => {
           const data = cache.readQuery({ query: GET_ME });
+          console.log(data)
           const userDataCache = data.me;
+          console.log(userDataCache)
           const savedBooksCache = userDataCache.savedBooks;
+          console.log(savedBooksCache)
           const updatedBookCache = [...savedBooksCache, bookToSave];
           data.me.savedBooks = updatedBookCache;
           cache.writeQuery({ query: GET_ME , data: {data: {...data.me.savedBooks}}})
